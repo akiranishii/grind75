@@ -174,6 +174,104 @@ class Solution:
 
 
 
+# ### Code Breakdown
+
+# #### 1. Define the `Solution` class and `findMinHeightTrees` method:
+# ```python
+# class Solution:
+#     def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
+# ```
+# - We're defining a class named `Solution`.
+# - Inside `Solution`, there's a method `findMinHeightTrees` that takes two arguments:
+#   - `n`: The total number of nodes in the tree.
+#   - `edges`: A list of edges, where each edge is a pair of nodes indicating a connection between them.
+
+# #### 2. Handle Base Cases:
+# ```python
+# if n <= 2:
+#     return [i for i in range(n)]
+# ```
+# - If the tree has 2 or fewer nodes, then each node is a valid root for an MHT (because the tree is already as short as it can be).
+# - We return a list of all nodes.
+
+# #### 3. Create an Adjacency List:
+# ```python
+# neighbors = defaultdict(set)
+# for start, end in edges:
+#     neighbors[start].add(end)
+#     neighbors[end].add(start)
+# ```
+# - We're creating a map (`neighbors`) to keep track of how nodes are connected.
+# - For each connection (`edge`), we add each node to the set of neighbors of the other node.
+# - This helps us quickly find all nodes connected to any given node.
+
+# #### 4. Initialize the First Layer of Leaves:
+# ```python
+# leaves = [i for i in range(n) if len(neighbors[i]) == 1]
+# ```
+# - We identify the "leaves" of the tree.
+# - A leaf is a node with only one connection (neighbor).
+# - We make a list of all such nodes.
+
+# #### 5. Trim the Leaves Iteratively:
+# ```python
+# remaining_nodes = n
+# while remaining_nodes > 2:
+#     remaining_nodes -= len(leaves)
+#     new_leaves = []
+#     for leaf in leaves:
+#         ...
+# ```
+# - We keep trimming the leaves until the number of remaining nodes is 2 or less.
+# - Each time we trim a leaf, we reduce the count of `remaining_nodes`.
+# - We prepare to collect the next set of leaves in `new_leaves`.
+
+# #### 6. Process Each Leaf:
+# ```python
+# neighbor = neighbors[leaf].pop()
+# neighbors[neighbor].remove(leaf)
+# if len(neighbors[neighbor]) == 1:
+#     new_leaves.append(neighbor)
+# ```
+# - For each leaf, we find its only neighbor and remove the leaf from the neighbor's set of connections.
+# - If this action turns the neighbor into a leaf (only one connection remaining), we add it to `new_leaves`.
+
+# #### 7. Update the Leaves List:
+# ```python
+# leaves = new_leaves
+# ```
+# - We update our list of leaves to the new leaves found in the current iteration.
+
+# #### 8. Return the Remaining Nodes:
+# ```python
+# return leaves
+# ```
+# - After trimming all possible leaves, the nodes remaining in the `leaves` list are the best candidates for being the roots of MHTs.
+# - We return this list as the final result.
+
+
+# Handle Simple Cases:
+
+# If there are 1 or 2 points, they are automatically the roots of MHTs.
+# Build a Map of Connections:
+
+# We create a map showing how each point is connected to others.
+# Find the Outer Points (Leaves):
+
+# Leaves are points with only one connection. They are like the tips of the branches.
+# Trim the Leaves:
+
+# We repeatedly remove these outer points. When a leaf is removed, the point it was connected to might become a new leaf.
+# This is like pruning the branches from the tips inward.
+# Stop When We Reach the Center:
+
+# We stop when we can't trim anymore without making the tree disconnected.
+# The points left are the best candidates for being the roots of MHTs.
+# Result:
+
+# The remaining points are the roots that make the tree as short as possible.
+# https://www.youtube.com/watch?v=ivl6BHJVcB0
+
 # Task scheduler
 
 class Solution:
@@ -261,3 +359,4 @@ class LRUCache:
 # obj = LRUCache(capacity)
 # param_1 = obj.get(key)
 # obj.put(key,value)
+
