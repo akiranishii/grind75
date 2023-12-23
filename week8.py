@@ -322,24 +322,14 @@ import bisect
 
 class Solution:
     def jobScheduling(self, startTime: List[int], endTime: List[int], profit: List[int]) -> int:
-        # Combine the start, end time, and profit into one list and sort by end time
         jobs = sorted(zip(startTime, endTime, profit), key=lambda x: x[1])
-
-        # dp array to store the maximum profit till each job
-        dp = [0] * (len(jobs) + 1)
-
-        for i in range(1, len(jobs) + 1):
-            # Include current job profit
-            incl_profit = jobs[i-1][2]
-            # Find the latest job that doesn't conflict with the current job
-            l = bisect.bisect_right(startTime, jobs[i-1][0], 0, i-1)
-            incl_profit += dp[l]
-            # Maximum profit is either including or excluding the current job
-            dp[i] = max(dp[i-1], incl_profit)
-
-        # The last element of dp will have the answer
-        return dp[-1]
-
+        dp = [[0, 0]]
+        for s, e, p in jobs:
+            i = bisect.bisect(dp, [s + 1]) - 1
+            if dp[i][1] + p > dp[-1][1]:
+                dp.append([e, dp[i][1] + p])
+        return dp[-1][1]
+    
 
 # Merge K sorted lists
     
@@ -382,6 +372,8 @@ class Solution:
             tail.next = l2
         return dummy.next
     
+
+# heap method
 
 import heapq
 
